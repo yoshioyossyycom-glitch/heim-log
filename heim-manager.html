@@ -301,33 +301,44 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
   <div class="sheet">
     <div class="knob"></div>
     <div class="stitle" id="memo-ttl">メモを追加</div>
-    <div class="fg">
-      <label class="fl">施設</label>
-      <select class="fs" id="m-fac"></select>
-    </div>
-    <div class="fg" id="m-res-grp">
-      <label class="fl">利用者（任意）</label>
-      <select class="fs" id="m-res"></select>
-    </div>
-    <div class="fg">
-      <label class="fl">日付</label>
-      <div class="date-wrap">
-        <div class="date-disp" id="m-date-disp"></div>
-        <input type="date" class="date-input-hidden" id="m-date">
-      </div>
-    </div>
+
+    <!-- 内容欄を最上部に -->
     <div class="fg">
       <label class="fl">内容</label>
       <textarea class="fta" id="m-txt" placeholder="メモ内容を入力…"></textarea>
     </div>
-    <div class="fg">
-      <label class="fl">タグ</label>
-      <select class="fs" id="m-tag">
-        <option value="memo">メモ</option>
-        <option value="urgent">要対応</option>
-        <option value="done">対応済</option>
-      </select>
+
+    <!-- 詳細設定（折りたたみ） -->
+    <div id="memo-detail-toggle" style="display:flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:12px;user-select:none;">
+      <span style="font-size:12px;color:var(--acc);font-weight:500;">詳細設定（施設・日付・タグ）</span>
+      <span id="memo-detail-chev" style="font-size:11px;color:var(--acc);">▾</span>
     </div>
+    <div id="memo-detail-body">
+      <div class="fg">
+        <label class="fl">施設</label>
+        <select class="fs" id="m-fac"></select>
+      </div>
+      <div class="fg" id="m-res-grp">
+        <label class="fl">利用者（任意）</label>
+        <select class="fs" id="m-res"></select>
+      </div>
+      <div class="fg">
+        <label class="fl">日付</label>
+        <div class="date-wrap">
+          <div class="date-disp" id="m-date-disp"></div>
+          <input type="date" class="date-input-hidden" id="m-date">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">タグ</label>
+        <select class="fs" id="m-tag">
+          <option value="memo">メモ</option>
+          <option value="urgent">要対応</option>
+          <option value="done">対応済</option>
+        </select>
+      </div>
+    </div>
+
     <div class="mact">
       <button class="bcnl" id="memo-cnl">キャンセル</button>
       <button class="bsav" id="memo-sav">保 存</button>
@@ -581,6 +592,13 @@ function rmiHTML(m){
     '<div class="rmtxt">'+esc(m.text)+'</div></div>';
 }
 
+function setMemoDetailOpen(open){
+  var body = document.getElementById('memo-detail-body');
+  var chev = document.getElementById('memo-detail-chev');
+  body.style.display = open ? 'block' : 'none';
+  chev.textContent   = open ? '▴' : '▾';
+}
+
 /* ══ メモ モーダル ══ */
 var _editMemoId=null;
 function openMemoModal(facId, resId){
@@ -596,7 +614,12 @@ function openMemoModal(facId, resId){
     return '<option value="'+f.id+'"'+(f.id===facId?' selected':'')+'>'+esc(f.name)+'</option>';
   }).join('');
   updateResSelect(resId);
+  // 詳細設定は開いた状態にしておく（施設・利用者が選択済みの場合は閉じる）
+  var hasContext = facId && facId !== null;
+  setMemoDetailOpen(!hasContext);
   openOv('ov-memo');
+  // 内容欄に自動フォーカス
+  setTimeout(function(){ document.getElementById('m-txt').focus(); }, 350);
 }
 function updateResSelect(preselectRid){
   var fid=document.getElementById('m-fac').value;
@@ -665,6 +688,7 @@ function openEditMemo(){
     return '<option value="'+f.id+'"'+(f.id===m.fid?' selected':'')+'>'+esc(f.name)+'</option>';
   }).join('');
   updateResSelect(m.rid);
+  setMemoDetailOpen(true); // 編集時は詳細設定を開いておく
   openOv('ov-memo');
 }
 
@@ -939,6 +963,10 @@ function initButtons(){
   document.getElementById('fab-add').onclick=function(){openMemoModal(null,null);};
 
   // メモモーダル
+  document.getElementById('memo-detail-toggle').onclick=function(){
+    var body=document.getElementById('memo-detail-body');
+    setMemoDetailOpen(body.style.display==='none');
+  };
   document.getElementById('m-fac').onchange=function(){updateResSelect(null);};
   document.getElementById('m-date').onchange=updateDateDisp;
   document.getElementById('memo-cnl').onclick=function(){closeOv('ov-memo');};
