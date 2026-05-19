@@ -252,7 +252,16 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
         <div style="flex:1;"><div class="srlbl">データをエクスポート</div></div>
         <span class="sarr">›</span>
       </div>
+      <div class="srow" id="btn-import">
+        <span style="font-size:20px;">📥</span>
+        <div style="flex:1;">
+          <div class="srlbl">データをインポート</div>
+          <div class="srsub">バックアップから復元</div>
+        </div>
+        <span class="sarr">›</span>
+      </div>
     </div>
+    <input type="file" id="import-input" accept=".json" style="display:none;">
     <div style="text-align:center;margin-top:32px;font-size:11px;color:var(--txm);">ユリーカ 支援記録 v1.4</div>
   </div>
 </div>
@@ -370,6 +379,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
     <div id="detail-body" style="font-size:14px;line-height:1.9;white-space:pre-wrap;margin-bottom:20px;"></div>
     <div class="mact">
       <button class="bdel" id="detail-del">削 除</button>
+      <button class="bsav" id="detail-edt" data-action="edit-memo" style="flex:1.5;">編 集</button>
       <button class="bcnl" id="detail-cnl">閉じる</button>
     </div>
   </div>
@@ -592,7 +602,11 @@ function updateResSelect(preselectRid){
   var fid=document.getElementById('m-fac').value;
   var ress=getRes().filter(function(r){return r.fid===fid;});
   var grp=document.getElementById('m-res-grp');
-  if(fid==='global'||!ress.length){grp.style.display='none';return;}
+  if(fid==='global'||!ress.length){
+    grp.style.display='none';
+    document.getElementById('m-res').innerHTML='<option value=""></option>';
+    return;
+  }
   grp.style.display='';
   document.getElementById('m-res').innerHTML=
     '<option value="">施設全体</option>'+
@@ -633,6 +647,27 @@ function openDetail(id){
   openOv('ov-detail');
 }
 
+function openEditMemo(){
+  var m=getMemos().find(function(x){return x.id===_detailId;});
+  if(!m) return;
+  closeOv('ov-detail');
+
+  // メモモーダルを編集モードで開く
+  _editMemoId=m.id;
+  document.getElementById('memo-ttl').textContent='メモを編集';
+  document.getElementById('m-date').value=m.date;
+  updateDateDisp();
+  document.getElementById('m-txt').value=m.text;
+  document.getElementById('m-tag').value=m.tag;
+
+  var facs=getFacs();
+  document.getElementById('m-fac').innerHTML=facs.map(function(f){
+    return '<option value="'+f.id+'"'+(f.id===m.fid?' selected':'')+'>'+esc(f.name)+'</option>';
+  }).join('');
+  updateResSelect(m.rid);
+  openOv('ov-memo');
+}
+
 /* ══ タイムライン ══ */
 var _tlFilter='all';
 function renderTimeline(){
@@ -666,8 +701,7 @@ function renderTimeline(){
       var fac=facs.find(function(f){return f.id===m.fid;});
       var res=m.rid?ress.find(function(r){return r.id===m.rid;}):null;
       var dotCls=facColorMap[m.fid]||'d0';
-      var who=res?esc(res.name):(fac?esc(fac.name):'—');
-      var facLbl=fac?esc(fac.name):'';
+      var who=res?esc(res.name):(fac?esc(fac.name):'—');      var facLbl=fac?esc(fac.name):'';
       return '<div class="tl-item" data-action="detail" data-id="'+m.id+'">'+
         '<div class="tl-item-hd">'+
           '<div class="tl-dot '+dotCls+'"></div>'+
@@ -880,6 +914,7 @@ document.addEventListener('click',function(e){
   var act=btn.dataset.action, id=btn.dataset.id||'';
   if(act==='add-memo')  { openMemoModal(btn.dataset.fid, btn.dataset.rid||null); return; }
   if(act==='detail')    { openDetail(id); return; }
+  if(act==='edit-memo') { openEditMemo(); return; }
   if(act==='edit-fac')  { openFacModal(id); return; }
   if(act==='del-fac')   { delFac(id); return; }
   if(act==='edit-res')  { openResModal(id); return; }
@@ -941,6 +976,41 @@ function initButtons(){
     a.href=URL.createObjectURL(blob);
     a.download='yuriika-'+todayStr()+'.json';
     a.click();
+  };
+
+  // インポート
+  document.getElementById('btn-import').onclick=function(){
+    document.getElementById('import-input').click();
+  };
+  document.getElementById('import-input').onchange=function(e){
+    var file=e.target.files[0];
+    if(!file) return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try {
+        var d=JSON.parse(ev.target.result);
+        // データ検証
+        if(!d.fac||!d.res||!d.memo){
+          alert('ファイルの形式が正しくありません。');
+          return;
+        }
+        confirm2(
+          'バックアップから復元しますか？\n現在のデータはすべて上書きされます。',
+          function(){
+            ST.set(K.fac, d.fac);
+            ST.set(K.res, d.res);
+            ST.set(K.memo, d.memo);
+            // input をリセット（同じファイルを再選択できるよう）
+            document.getElementById('import-input').value='';
+            renderSettings();
+            alert('復元が完了しました！');
+          }
+        );
+      } catch(err) {
+        alert('ファイルの読み込みに失敗しました。\n正しいバックアップファイルを選択してください。');
+      }
+    };
+    reader.readAsText(file);
   };
 }
 
