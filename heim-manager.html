@@ -159,6 +159,30 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
 .mitem.over-top{border-top:2.5px solid var(--acc);}
 .mitem.over-bot{border-bottom:2.5px solid var(--acc);}
 
+/* Todo */
+.todo-main{padding:16px 14px 90px;flex:1;overflow-y:auto;}
+.todo-summary{display:flex;gap:10px;margin-bottom:16px;}
+.todo-sumbox{flex:1;background:var(--card);border-radius:var(--r);border:1px solid var(--bdr);box-shadow:var(--sh);padding:12px 14px;text-align:center;}
+.todo-sumbox .num{font-size:24px;font-weight:700;color:var(--navy);}
+.todo-sumbox .lbl{font-size:11px;color:var(--txm);margin-top:2px;}
+.todo-section-lbl{font-size:11px;font-weight:700;color:var(--txm);letter-spacing:.08em;padding:0 4px 8px;margin-top:4px;display:block;}
+.todo-card{background:var(--card);border-radius:var(--r);border:1px solid var(--bdr);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px;}
+.todo-item{display:flex;align-items:center;padding:12px 14px 12px 8px;gap:10px;border-bottom:1px solid var(--bg);transition:background .15s;}
+.todo-item:last-child{border-bottom:none;}
+.todo-item.done-item{opacity:.5;}
+.todo-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s;background:#fff;}
+.todo-check.checked{background:var(--grn);border-color:var(--grn);color:#fff;}
+.todo-body{flex:1;min-width:0;cursor:pointer;}
+.todo-who{font-size:12px;color:var(--acc);font-weight:600;margin-bottom:2px;}
+.todo-txt{font-size:13px;color:var(--tx);line-height:1.5;word-break:break-all;}
+.todo-txt.done-txt{text-decoration:line-through;color:var(--txm);}
+.todo-meta{font-size:10px;color:var(--txm);margin-top:3px;}
+.todo-actions{display:flex;gap:6px;flex-shrink:0;}
+.todo-empty{padding:40px 20px;text-align:center;font-size:13px;color:var(--txm);}
+.todo-add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:var(--card);border:2px dashed var(--bdr);border-radius:var(--r);color:var(--acc);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;margin-bottom:16px;}
+.todo-add-btn:active{background:var(--accs);border-color:var(--acc);}
+.todo-done-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--txm);cursor:pointer;padding:4px 0 12px;background:none;border:none;font-family:inherit;}
+
 /* タイムライン */
 .tl-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;}
 .tl-filter{display:flex;gap:8px;padding:12px 14px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--bdr);}
@@ -199,7 +223,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
   <button class="fab" id="fab-add">＋</button>
   <nav class="bbar">
     <button class="bitem active" id="bar-home1"><span class="bic">📋</span>記録</button>
-    <button class="bitem" id="bar-tl1"><span class="bic">📰</span>タイムライン</button>
+    <button class="bitem" id="bar-tl1"><span class="bic">📰</span>TL</button>
+    <button class="bitem" id="bar-todo1"><span class="bic">✅</span>Todo</button>
     <button class="bitem" id="bar-cfg1"><span class="bic">⚙️</span>設定</button>
   </nav>
 </div>
@@ -218,8 +243,30 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
   </div>
   <nav class="bbar">
     <button class="bitem" id="bar-home2"><span class="bic">📋</span>記録</button>
-    <button class="bitem active" id="bar-tl2"><span class="bic">📰</span>タイムライン</button>
+    <button class="bitem active" id="bar-tl2"><span class="bic">📰</span>TL</button>
+    <button class="bitem" id="bar-todo2"><span class="bic">✅</span>Todo</button>
     <button class="bitem" id="bar-cfg2"><span class="bic">⚙️</span>設定</button>
+  </nav>
+</div>
+
+<!-- Todoページ -->
+<div class="page" id="pg-todo">
+  <header class="hd">
+    <div class="hd-top">
+      <div class="hd-title">今日のTodo<small>TODAY'S TODO</small></div>
+      <button class="ic-btn" id="btn-cfg-todo">⚙️</button>
+    </div>
+    <div class="date-bar">
+      <div class="date-bdg" id="todoBadge">—</div>
+      <div class="summ" id="todoSumm"></div>
+    </div>
+  </header>
+  <div class="todo-main" id="todoMain"></div>
+  <nav class="bbar">
+    <button class="bitem" id="bar-home6"><span class="bic">📋</span>記録</button>
+    <button class="bitem" id="bar-tl6"><span class="bic">📰</span>TL</button>
+    <button class="bitem active"><span class="bic">✅</span>Todo</button>
+    <button class="bitem" id="bar-cfg6"><span class="bic">⚙️</span>設定</button>
   </nav>
 </div>
 
@@ -266,7 +313,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
   </div>
   <nav class="bbar">
     <button class="bitem" id="bar-home3"><span class="bic">📋</span>記録</button>
-    <button class="bitem" id="bar-tl3"><span class="bic">📰</span>タイムライン</button>
+    <button class="bitem" id="bar-tl3"><span class="bic">📰</span>TL</button>
+    <button class="bitem" id="bar-todo3"><span class="bic">✅</span>Todo</button>
     <button class="bitem active"><span class="bic">⚙️</span>設定</button>
   </nav>
 </div>
@@ -286,7 +334,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
   </div>
   <nav class="bbar">
     <button class="bitem" id="bar-home4"><span class="bic">📋</span>記録</button>
-    <button class="bitem" id="bar-tl4"><span class="bic">📰</span>タイムライン</button>
+    <button class="bitem" id="bar-tl4"><span class="bic">📰</span>TL</button>
+    <button class="bitem" id="bar-todo4"><span class="bic">✅</span>Todo</button>
     <button class="bitem active"><span class="bic">⚙️</span>設定</button>
   </nav>
 </div>
@@ -306,12 +355,24 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);
   </div>
   <nav class="bbar">
     <button class="bitem" id="bar-home5"><span class="bic">📋</span>記録</button>
-    <button class="bitem" id="bar-tl5"><span class="bic">📰</span>タイムライン</button>
+    <button class="bitem" id="bar-tl5"><span class="bic">📰</span>TL</button>
+    <button class="bitem" id="bar-todo5"><span class="bic">✅</span>Todo</button>
     <button class="bitem active"><span class="bic">⚙️</span>設定</button>
   </nav>
 </div>
 
-<!-- モーダル: メモ追加 -->
+<!-- モーダル: Todo選択 -->
+<div class="ov" id="ov-todo-pick">
+  <div class="sheet">
+    <div class="knob"></div>
+    <div class="stitle">メモからTodoに追加</div>
+    <div style="font-size:12px;color:var(--txm);margin-bottom:12px;">追加したいメモを選択してください</div>
+    <div id="todo-pick-list" style="max-height:50vh;overflow-y:auto;margin-bottom:14px;"></div>
+    <div class="mact">
+      <button class="bcnl" id="todo-pick-cnl">閉じる</button>
+    </div>
+  </div>
+</div>
 <div class="ov" id="ov-memo">
   <div class="sheet">
     <div class="knob"></div>
@@ -423,7 +484,7 @@ var ST = {
   get: function(k){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return _mem[k]||null; } },
   set: function(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} _mem[k]=v; }
 };
-var K = {fac:'yk-fac', res:'yk-res', memo:'yk-memo'};
+var K = {fac:'yk-fac', res:'yk-res', memo:'yk-memo', todo:'yk-todo'};
 
 /* ══ 初期データ ══ */
 function initData(){
@@ -444,10 +505,12 @@ function initData(){
     {id:'r8',name:'吉田さん',fid:'soka',order:0}
   ]);
   if(!ST.get(K.memo)) ST.set(K.memo,[]);
+  if(!ST.get(K.todo)) ST.set(K.todo,[]);
 }
 function getFacs() { return (ST.get(K.fac)||[]).sort(function(a,b){return a.order-b.order;}); }
 function getRes()  { return (ST.get(K.res)||[]).sort(function(a,b){return (a.order||0)-(b.order||0);}); }
 function getMemos(){ return ST.get(K.memo)||[]; }
+function getTodos(){ return ST.get(K.todo)||[]; }
 
 /* ══ ユーティリティ ══ */
 var DOW_SHORT = ['日','月','火','水','木','金','土'];
@@ -498,6 +561,7 @@ function showPage(id){
   var fn = {
     'pg-home':    renderHome,
     'pg-tl':      renderTimeline,
+    'pg-todo':    renderTodo,
     'pg-settings':renderSettings,
     'pg-fac':     renderFac,
     'pg-res':     renderRes
@@ -539,8 +603,9 @@ function renderHome(){
     var bodyHTML='';
     if(fac.id==='global'){
       var dm=facMemos.slice().sort(function(a,b){return b.date.localeCompare(a.date);});
-      bodyHTML='<div style="padding:8px 0;">'+(dm.length?dm.map(function(m){return miHTML(m,dotCls);}).join(''):'<div class="empty">業務メモはまだありません</div>')+'</div>'+
-        '<div style="padding:0 16px 12px;"><button class="add-s" data-action="add-memo" data-fid="global" data-rid="">＋ 業務メモを追加</button></div>';
+      bodyHTML=
+        '<div style="padding:8px 16px 4px;"><button class="add-s" data-action="add-memo" data-fid="global" data-rid="">＋ 業務メモを追加</button></div>'+
+        '<div style="padding:4px 0 8px;">'+(dm.length?dm.map(function(m){return miHTML(m,dotCls);}).join(''):'<div class="empty">業務メモはまだありません</div>')+'</div>';
     } else {
       var direct=facMemos.filter(function(m){return !m.rid;}).sort(function(a,b){return b.date.localeCompare(a.date);});
       var facWide='';
@@ -568,8 +633,9 @@ function renderHome(){
           '<div style="padding:6px 16px 2px 0;"><button class="add-s" data-action="add-memo" data-fid="'+fac.id+'" data-rid="'+r.id+'">＋ 記録を追加</button></div>'+
           '</div></div>';
       }).join('');
-      bodyHTML=facWide+resHTML+
-        '<div style="padding:8px 16px 12px;"><button class="add-s" data-action="add-memo" data-fid="'+fac.id+'" data-rid="">＋ 施設全体メモを追加</button></div>';
+      bodyHTML=
+        '<div style="padding:8px 16px 4px;"><button class="add-s" data-action="add-memo" data-fid="'+fac.id+'" data-rid="">＋ 施設全体メモを追加</button></div>'+
+        facWide+resHTML;
     }
 
     card.innerHTML=
@@ -732,6 +798,165 @@ function renderTimeline(){
       '<div class="tl-day-lbl"><span class="tl-day-txt">'+fmtDFull(date)+'</span></div>'+
       items+'</div>';
   }).join('');
+}
+
+/* ══ Todo ══ */
+function renderTodo(){
+  var now=new Date(), dow=now.getDay();
+  document.getElementById('todoBadge').textContent =
+    (now.getMonth()+1)+'月'+now.getDate()+'日（'+DOW_SHORT[dow]+'）';
+
+  var todos=getTodos();
+  var done=todos.filter(function(t){return t.done;}).length;
+  var remaining=todos.length-done;
+  document.getElementById('todoSumm').textContent =
+    remaining>0?'残り '+remaining+'件':'すべて完了 🎉';
+
+  var cont=document.getElementById('todoMain');
+  var showDone=cont.dataset.showDone==='1';
+
+  var activeTodos=todos.filter(function(t){return !t.done;});
+  var doneTodos=todos.filter(function(t){return t.done;});
+  var facs=getFacs(), ress=getRes(), memos=getMemos();
+
+  var html='';
+
+  // サマリー
+  html+='<div class="todo-summary">'+
+    '<div class="todo-sumbox"><div class="num">'+todos.length+'</div><div class="lbl">合計</div></div>'+
+    '<div class="todo-sumbox"><div class="num" style="color:var(--grn);">'+done+'</div><div class="lbl">完了</div></div>'+
+    '<div class="todo-sumbox"><div class="num" style="color:var(--red);">'+remaining+'</div><div class="lbl">未完了</div></div>'+
+  '</div>';
+
+  // 追加ボタン（サマリー直下）
+  html+='<button class="todo-add-btn" data-action="todo-pick">＋ メモからTodoに追加</button>';
+
+  // 未完了リスト
+  html+='<span class="todo-section-lbl">📌 やること（'+activeTodos.length+'件）</span>';
+  if(activeTodos.length){
+    html+='<div class="todo-card" id="todo-active-list">'+
+      activeTodos.map(function(t){ return todoItemHTML(t,facs,ress,memos,false); }).join('')+
+    '</div>';
+  } else {
+    html+='<div class="todo-card"><div class="todo-empty">タスクはありません 🎉</div></div>';
+  }
+
+  // 完了リスト
+  if(doneTodos.length){
+    html+='<button class="todo-done-toggle" data-action="todo-toggle-done">'+
+      (showDone?'▴':'▾')+' 完了済み（'+doneTodos.length+'件）'+
+    '</button>';
+    if(showDone){
+      html+='<div class="todo-card">'+
+        doneTodos.map(function(t){ return todoItemHTML(t,facs,ress,memos,true); }).join('')+
+      '</div>';
+    }
+  }
+
+  cont.innerHTML=html;
+
+  // 未完了リストのドラッグソート
+  var activeEl=document.getElementById('todo-active-list');
+  if(activeEl){
+    makeTodoSortable(activeEl);
+  }
+}
+
+function todoItemHTML(t, facs, ress, memos, isDone){
+  var m=memos.find(function(x){return x.id===t.memoId;});
+  var fac=facs.find(function(f){return f.id===t.fid;});
+  var res=t.rid?ress.find(function(r){return r.id===t.rid;}):null;
+  var who=res?res.name:(fac?fac.name:'—');
+  var txt=t.text||(m?m.text:'（メモが削除されました）');
+  return '<div class="todo-item'+(isDone?' done-item':'')+'" data-id="'+t.id+'">'+
+    '<div class="dh"><span></span><span></span><span></span></div>'+
+    '<div class="todo-check'+(t.done?' checked':'')+'" data-action="todo-check" data-id="'+t.id+'">'+(t.done?'✓':'')+'</div>'+
+    '<div class="todo-body" data-action="detail" data-id="'+(t.memoId||'')+'">'+
+      '<div class="todo-who">'+esc(who)+'</div>'+
+      '<div class="todo-txt'+(isDone?' done-txt':'')+'">'+esc(txt)+'</div>'+
+      '<div class="todo-meta">'+fmtD(t.date)+'</div>'+
+    '</div>'+
+    '<div class="todo-actions">'+
+      '<button class="abtn adel" data-action="todo-del" data-id="'+t.id+'">🗑</button>'+
+    '</div>'+
+  '</div>';
+}
+
+function makeTodoSortable(container){
+  var dragging=null;
+  function items(){ return Array.from(container.querySelectorAll(':scope > .todo-item')); }
+  function clear(){ items().forEach(function(el){el.classList.remove('dragging','over-top','over-bot');}); }
+  function onMove(clientY){
+    if(!dragging) return;
+    var list=items().filter(function(el){return el!==dragging;});
+    clear(); dragging.classList.add('dragging');
+    var placed=false;
+    for(var i=0;i<list.length;i++){
+      var r=list[i].getBoundingClientRect();
+      if(clientY<r.top+r.height*0.5){container.insertBefore(dragging,list[i]);placed=true;break;}
+    }
+    if(!placed&&list.length) container.appendChild(dragging);
+  }
+  function onEnd(){
+    if(!dragging) return;
+    clear();
+    // 新しい順序を保存
+    var newIds=items().map(function(el){return el.dataset.id;});
+    var todos=getTodos();
+    var active=todos.filter(function(t){return !t.done;});
+    var done=todos.filter(function(t){return t.done;});
+    var reordered=newIds.map(function(id){
+      return active.find(function(t){return t.id===id;});
+    }).filter(Boolean);
+    ST.set(K.todo, reordered.concat(done));
+    dragging=null;
+  }
+  function attach(handle){
+    handle.addEventListener('touchstart',function(e){
+      e.stopPropagation(); e.preventDefault();
+      dragging=handle.closest('.todo-item'); dragging.classList.add('dragging');
+      function mv(ev){ev.preventDefault();onMove(ev.touches[0].clientY);}
+      function en(){onEnd();document.removeEventListener('touchmove',mv);document.removeEventListener('touchend',en);}
+      document.addEventListener('touchmove',mv,{passive:false});
+      document.addEventListener('touchend',en);
+    },{passive:false});
+    handle.addEventListener('mousedown',function(e){
+      e.stopPropagation(); e.preventDefault();
+      dragging=handle.closest('.todo-item'); dragging.classList.add('dragging');
+      function mv(ev){onMove(ev.clientY);}
+      function en(){onEnd();document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',en);}
+      document.addEventListener('mousemove',mv);
+      document.addEventListener('mouseup',en);
+    });
+  }
+  container.querySelectorAll(':scope > .todo-item > .dh').forEach(attach);
+}
+
+function openTodoPick(){
+  var memos=getMemos(), todos=getTodos(), facs=getFacs(), ress=getRes();
+  var alreadyIds=todos.map(function(t){return t.memoId;});
+  // まだTodo登録されていないメモを新しい順に表示
+  var candidates=memos.filter(function(m){return alreadyIds.indexOf(m.id)<0;})
+    .sort(function(a,b){return b.date.localeCompare(a.date)||b.createdAt.localeCompare(a.createdAt);});
+  var el=document.getElementById('todo-pick-list');
+  if(!candidates.length){
+    el.innerHTML='<div class="todo-empty">追加できるメモがありません</div>';
+  } else {
+    el.innerHTML=candidates.map(function(m){
+      var fac=facs.find(function(f){return f.id===m.fid;});
+      var res=m.rid?ress.find(function(r){return r.id===m.rid;}):null;
+      var who=res?res.name:(fac?fac.name:'—');
+      return '<div class="todo-item" style="border-bottom:1px solid var(--bg);" data-action="todo-add" data-id="'+m.id+'">'+
+        '<div style="flex:1;padding:2px 0;">'+
+          '<div class="todo-who">'+esc(who)+'</div>'+
+          '<div class="todo-txt">'+esc(m.text)+'</div>'+
+          '<div class="todo-meta">'+fmtD(m.date)+'</div>'+
+        '</div>'+
+        '<span style="color:var(--acc);font-size:20px;padding-left:8px;">＋</span>'+
+      '</div>';
+    }).join('');
+  }
+  openOv('ov-todo-pick');
 }
 
 /* ══ 設定 ══ */
@@ -936,6 +1161,33 @@ document.addEventListener('click',function(e){
   if(act==='edit-res')  { openResModal(id); return; }
   if(act==='del-res')   { delRes(id); return; }
   if(act==='tl-filter') { _tlFilter=btn.dataset.fid; renderTimeline(); return; }
+  if(act==='todo-pick') { openTodoPick(); return; }
+  if(act==='todo-add')  {
+    var memos=getMemos(), m=memos.find(function(x){return x.id===id;});
+    if(!m) return;
+    var todos=getTodos();
+    todos.push({id:uid(), memoId:m.id, fid:m.fid, rid:m.rid, date:m.date, text:m.text, done:false, createdAt:new Date().toISOString()});
+    ST.set(K.todo,todos);
+    // ピックリストを更新
+    openTodoPick();
+    return;
+  }
+  if(act==='todo-check'){
+    var todos=getTodos();
+    todos=todos.map(function(t){return t.id===id?Object.assign({},t,{done:!t.done}):t;});
+    ST.set(K.todo,todos); renderTodo(); return;
+  }
+  if(act==='todo-del'){
+    confirm2('このTodoを削除しますか？',function(){
+      ST.set(K.todo,getTodos().filter(function(t){return t.id!==id;}));
+      renderTodo();
+    }); return;
+  }
+  if(act==='todo-toggle-done'){
+    var cont=document.getElementById('todoMain');
+    cont.dataset.showDone=cont.dataset.showDone==='1'?'0':'1';
+    renderTodo(); return;
+  }
 });
 
 /* ══ ボタン登録 ══ */
@@ -946,7 +1198,13 @@ function initButtons(){
   go('bar-cfg1','pg-settings'); go('bar-cfg2','pg-settings');
   go('bar-home1','pg-home');    go('bar-home2','pg-home');
   go('bar-home3','pg-home');   go('bar-home4','pg-home');   go('bar-home5','pg-home');
+  go('bar-home6','pg-home');
+  go('bar-tl1','pg-tl');        go('bar-tl2','pg-tl');
   go('bar-tl3','pg-tl');       go('bar-tl4','pg-tl');       go('bar-tl5','pg-tl');
+  go('bar-tl6','pg-tl');
+  go('bar-todo1','pg-todo');    go('bar-todo2','pg-todo');
+  go('bar-todo3','pg-todo');    go('bar-todo4','pg-todo');   go('bar-todo5','pg-todo');
+  go('btn-cfg-todo','pg-settings');
   go('bar-tl1','pg-tl');        go('bar-tl2','pg-tl');
   go('btn-cfg-back','pg-home');
   go('btn-to-fac','pg-fac');    go('btn-to-res','pg-res');
@@ -959,8 +1217,8 @@ function initButtons(){
   // メモモーダル
   document.getElementById('m-fac').onchange=function(){updateResSelect(null);};
   document.getElementById('m-date').onchange=updateDateDisp;
-  document.getElementById('memo-cnl').onclick=function(){closeOv('ov-memo');};
-  document.getElementById('memo-sav').onclick=saveMemo;
+  document.getElementById('todo-pick-cnl').onclick=function(){closeOv('ov-todo-pick');};
+  document.getElementById('memo-cnl').onclick=function(){closeOv('ov-memo');};  document.getElementById('memo-sav').onclick=saveMemo;
 
   // 施設モーダル
   document.getElementById('fac-cnl').onclick=function(){closeOv('ov-fac');};
